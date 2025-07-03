@@ -2,36 +2,92 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Mon personnage 3D</title>
+  <title>Personnage 3D animé</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     body {
       margin: 0;
       background-color: #111;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
     }
+
     model-viewer {
-      width: 80vw;
-      height: 80vh;
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      margin: auto;
+      display: block;
       background-color: #222;
+      border-radius: 16px;
+    }
+
+    #controls {
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #2d8cf0;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #1a6ed8;
+    }
+
+    p {
+      max-width: 600px;
+      margin: auto;
+      font-size: 15px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <model-viewer 
-    src="model.glb"
+
+  <model-viewer id="model" src="model.glb"
     autoplay
+    camera-controls
+    auto-rotate
     animation-name="Animation"
-    camera-controls 
-    auto-rotate 
-    exposure="1" 
-    shadow-intensity="1" 
+    shadow-intensity="1"
     ar
-    ar-modes="webxr scene-viewer quick-look"
-    alt="Personnage animé en 3D">
+    alt="Personnage 3D animé">
   </model-viewer>
+
+  <div id="controls">
+    <button id="toggle">⏸ Pause</button>
+  </div>
+
+  <p>
+    Utilisez votre doigt ou la souris pour faire tourner le personnage.  
+    Touchez le bouton ci-dessus pour mettre l'animation en pause ou la relancer.
+  </p>
+
+  <script>
+    const viewer = document.getElementById('model');
+    const button = document.getElementById('toggle');
+    let playing = true;
+
+    button.addEventListener('click', () => {
+      if (playing) {
+        viewer.pause();
+        button.textContent = '▶️ Lecture';
+      } else {
+        viewer.play();
+        button.textContent = '⏸ Pause';
+      }
+      playing = !playing;
+    });
+  </script>
+
 </body>
 </html>
