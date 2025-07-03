@@ -5,49 +5,22 @@
   <title>Personnage 3D animé</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
-  body {
-    margin: 0;
-    background-color: #111;
-    color: white;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 0;
-  }
+    body {
+      margin: 0;
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
 
-  model-viewer {
-    width: 100%;
-    height: 90vh;
-    display: block;
-    background-color: #222;
-  }
+    model-viewer {
+      width: 100%;
+      display: block;
+      background-color: #222;
+    }
 
-  #controls {
-    margin-top: 10px;
-  }
-
-  button {
-    background-color: #2d8cf0;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-
-  button:hover {
-    background-color: #1a6ed8;
-  }
-
-  p {
-    max-width: 600px;
-    margin: 10px auto 40px auto;
-    font-size: 15px;
-    color: #ccc;
-    padding: 0 10px;
-  }
-
+    #controls {
+      margin-top: 10px;
     }
 
     button {
@@ -67,9 +40,10 @@
 
     p {
       max-width: 600px;
-      margin: auto;
+      margin: 10px auto 40px auto;
       font-size: 15px;
       color: #ccc;
+      padding: 0 10px;
     }
   </style>
 </head>
@@ -90,11 +64,11 @@
   </div>
 
   <p>
-    Utilisez votre doigt ou la souris pour faire tourner le personnage.  
-    Touchez le bouton ci-dessus pour mettre l'animation en pause ou la relancer.
+    Faites glisser pour tourner le personnage. Touchez Pause/Lecture pour contrôler l'animation.
   </p>
 
   <script>
+    // Lecture / Pause
     const viewer = document.getElementById('model');
     const button = document.getElementById('toggle');
     let playing = true;
@@ -109,6 +83,16 @@
       }
       playing = !playing;
     });
+
+    // Adapter la hauteur visible à l'écran
+    function setViewerHeight() {
+      const vh = window.innerHeight;
+      viewer.style.height = (vh * 0.85) + "px";
+    }
+
+    window.addEventListener('resize', setViewerHeight);
+    window.addEventListener('orientationchange', setViewerHeight);
+    window.addEventListener('load', setViewerHeight);
   </script>
 
 </body>
