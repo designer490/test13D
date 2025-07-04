@@ -49,6 +49,9 @@
     auto-rotate
     shadow-intensity="1"
     ar
+    environment-image="neutral"
+    min-camera-orbit="auto 0deg auto"
+    max-camera-orbit="auto 89deg auto"
     alt="Personnage 3D">
   </model-viewer>
 
@@ -82,7 +85,7 @@
       const posture = select.value;
       description.textContent = descriptions[posture];
 
-      // Si tu veux associer une animation :
+      // Si tu as des animations nommées comme les positions, décommente ceci :
       // viewer.animationName = posture;
       // viewer.play();
     });
