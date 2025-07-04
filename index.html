@@ -1,100 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Personnage 3D animé</title>
+  <meta charset="UTF-8">
+  <title>Postures du personnage</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     body {
       margin: 0;
+      font-family: Arial, sans-serif;
       background-color: #111;
       color: white;
-      font-family: Arial, sans-serif;
       text-align: center;
+      padding-bottom: 30px;
     }
 
     model-viewer {
       width: 100%;
-      display: block;
+      height: 80vh;
       background-color: #222;
     }
 
-    #controls {
+    select {
       margin-top: 10px;
-    }
-
-    button {
-      background-color: #2d8cf0;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      color: white;
       font-size: 16px;
-      cursor: pointer;
-      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      background-color: #333;
+      color: white;
+      border: none;
     }
 
-    button:hover {
-      background-color: #1a6ed8;
-    }
-
-    p {
-      max-width: 600px;
-      margin: 10px auto 40px auto;
-      font-size: 15px;
+    #description {
+      margin-top: 15px;
+      font-size: 16px;
       color: #ccc;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
       padding: 0 10px;
     }
   </style>
 </head>
 <body>
 
- <model-viewer id="viewer" src="model.glb"
-  autoplay
-  camera-controls
-  auto-rotate
-  shadow-intensity="1"
-  ar
-  min-camera-orbit="auto 0deg auto"
-  max-camera-orbit="auto 89deg auto"
-  alt="Personnage 3D">
-</model-viewer>
+  <model-viewer id="viewer" src="model.glb"
+    autoplay
+    camera-controls
+    auto-rotate
+    shadow-intensity="1"
+    ar
+    alt="Personnage 3D">
+  </model-viewer>
 
-
-  <div id="controls">
-    <button id="toggle">⏸ Pause</button>
+  <div>
+    <label for="position">Choisir une position :</label><br>
+    <select id="position">
+      <option value="debout">Debout</option>
+      <option value="assise">Assise</option>
+      <option value="saut">Saut</option>
+      <option value="attaque">Attaque</option>
+    </select>
   </div>
 
-  <p>
-    Faites glisser pour tourner le personnage. Touchez Pause/Lecture pour contrôler l'animation.
-  </p>
+  <div id="description">
+    Le personnage est debout, en posture neutre.
+  </div>
 
   <script>
-    // Lecture / Pause
-    const viewer = document.getElementById('model');
-    const button = document.getElementById('toggle');
-    let playing = true;
+    const description = document.getElementById("description");
+    const select = document.getElementById("position");
+    const viewer = document.getElementById("viewer");
 
-    button.addEventListener('click', () => {
-      if (playing) {
-        viewer.pause();
-        button.textContent = '▶️ Lecture';
-      } else {
-        viewer.play();
-        button.textContent = '⏸ Pause';
-      }
-      playing = !playing;
+    const descriptions = {
+      debout: "Le personnage est debout, en posture neutre.",
+      assise: "Le personnage est assis, au repos.",
+      saut: "Le personnage saute, en mouvement ascendant.",
+      attaque: "Le personnage attaque avec vigueur."
+    };
+
+    select.addEventListener("change", () => {
+      const posture = select.value;
+      description.textContent = descriptions[posture];
+
+      // Si tu veux associer une animation :
+      // viewer.animationName = posture;
+      // viewer.play();
     });
-
-    // Adapter la hauteur visible à l'écran
-    function setViewerHeight() {
-      const vh = window.innerHeight;
-      viewer.style.height = (vh * 0.85) + "px";
-    }
-
-    window.addEventListener('resize', setViewerHeight);
-    window.addEventListener('orientationchange', setViewerHeight);
-    window.addEventListener('load', setViewerHeight);
   </script>
 
 </body>
