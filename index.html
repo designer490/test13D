@@ -49,15 +49,17 @@
 </head>
 <body>
 
-  <model-viewer id="model" src="model.glb"
-    autoplay
-    camera-controls
-    auto-rotate
-    animation-name="Animation"
-    shadow-intensity="1"
-    ar
-    alt="Personnage 3D animé">
-  </model-viewer>
+  <model-viewer id="viewer" src="model.glb"
+  autoplay
+  camera-controls
+  auto-rotate
+  shadow-intensity="1"
+  ar
+  min-camera-orbit="auto 0deg auto"
+  max-camera-orbit="auto 90deg auto"
+  alt="Personnage 3D">
+</model-viewer>
+
 
   <div id="controls">
     <button id="toggle">⏸ Pause</button>
