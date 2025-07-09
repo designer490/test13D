@@ -8,8 +8,8 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #111;
-      color: white;
+      background-color: #ccc; /* ✅ Fond gris */
+      color: black;
       text-align: center;
     }
 
@@ -31,11 +31,27 @@
       border: none;
     }
 
-    model-viewer {
+    #container {
+      position: relative;
       width: 100%;
       height: 80vh;
-      background-color: #222;
-      --progress-bar-color: white;
+      overflow: hidden;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background-color: transparent; /* ✅ Important pour laisser voir le fond */
+    }
+
+    #ground {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%; /* ✅ Hauteur ajustable du sol */
+      background-color: white; /* ✅ Sol blanc */
+      z-index: 0;
     }
 
     #controls {
@@ -63,10 +79,6 @@
     .button:hover {
       background-color: #666;
     }
-
-    #container {
-      position: relative;
-    }
   </style>
 </head>
 <body>
@@ -86,6 +98,10 @@
   </div>
 
   <div id="container">
+    <!-- ✅ Sol blanc au fond -->
+    <div id="ground"></div>
+
+    <!-- ✅ Contrôle caméra -->
     <div id="controls">
       <button class="button" onclick="setCamera('default')">↩ Vue Libre</button>
       <button class="button" onclick="setCamera('front')">👤 Face</button>
@@ -95,6 +111,7 @@
       <button class="button" onclick="setCamera('top')">🔝 Dessus</button>
     </div>
 
+    <!-- ✅ Visionneuse du modèle -->
     <model-viewer id="viewer"
       src="model.glb"
       autoplay
@@ -110,8 +127,6 @@
       exposure="1"
       style="--poster-color: transparent;"
     >
-      <!-- Sol virtuel -->
-      <div slot="shadow" style="width: 100%; height: 0.1px; background: transparent;"></div>
     </model-viewer>
   </div>
 
