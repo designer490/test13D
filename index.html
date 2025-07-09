@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>TAICHI : séquence1, ouverture</title>
+  <title>TAICHI : Séquence 1</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     body {
@@ -35,6 +35,7 @@
       width: 100%;
       height: 80vh;
       background-color: #222;
+      --progress-bar-color: white;
     }
 
     #controls {
@@ -43,8 +44,8 @@
       left: 10px;
       right: 10px;
       display: flex;
-      justify-content: space-between;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 8px;
       z-index: 10;
     }
@@ -100,14 +101,17 @@
       camera-controls
       auto-rotate
       shadow-intensity="1"
-      environment-image="neutral"
-      exposure="1"
-      alt="Séquence Taichi"
-      ar
       shadow-softness="1"
+      environment-image="neutral"
       camera-orbit="0deg 75deg 3m"
       field-of-view="30deg"
-      style="--poster-color: transparent;">
+      alt="Séquence Taichi"
+      ar
+      exposure="1"
+      style="--poster-color: transparent;"
+    >
+      <!-- Sol virtuel -->
+      <div slot="shadow" style="width: 100%; height: 0.1px; background: transparent;"></div>
     </model-viewer>
   </div>
 
@@ -118,21 +122,66 @@
     let currentStep = null;
 
     const commentaires = {
-      P1: `La tête est suspendue. Les épaules sont basses...`,
-      P2: `Les genoux fléchissent légèrement...`,
-      P3: `La taille se déplace sur la gauche...`,
-      P4: `La taille remonte vers le haut...`,
+      P1: `La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés...`,
+      P2: `Les genoux fléchissent légèrement pour amener tout le poids du corps sur le pied droit...`,
+      P3: `La taille se déplace sur la gauche pour se centrer...`,
+      P4: `La taille remonte vers le haut, elle entraîne les deux bras...`,
       P5: `Les bras redescendent en sens inverse...`
     };
 
-    // Caméras prédéfinies
     const cameraPresets = {
       default: '0deg 75deg 3m',
       front: '0deg 90deg 2.5m',
       back: '180deg 90deg 2.5m',
       left: '90deg 90deg 2.5m',
       right: '-90deg 90deg 2.5m',
-      top: '0deg 0deg 2.5m'
+      top: '0deg 0deg 3m'
     };
 
-    function setCamera(v
+    function setCamera(view) {
+      const orbit = cameraPresets[view] || cameraPresets.default;
+      viewer.setAttribute('camera-orbit', orbit);
+      viewer.autoRotate = (view === 'default');
+    }
+
+    select.addEventListener('change', () => {
+      const value = select.value;
+
+      if (value === 'animation') {
+        retourAnimation();
+      } else {
+        currentStep = value;
+        viewer.removeAttribute('autoplay');
+        viewer.setAttribute('src', `${value}.glb`);
+        viewer.addEventListener('load', () => {
+          speak(commentaires[value]);
+        }, { once: true });
+      }
+    });
+
+    function retourAnimation() {
+      currentStep = null;
+      viewer.setAttribute('src', 'model.glb');
+      viewer.setAttribute('autoplay', true);
+      viewer.autoRotate = true;
+      select.value = 'animation';
+    }
+
+    function speak(text) {
+      if (!text) return;
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      synth.cancel();
+      synth.speak(utterance);
+    }
+
+    viewer.addEventListener('load', () => {
+      if (!currentStep) {
+        viewer.play();
+      }
+    });
+  </script>
+
+</body>
+</html>
