@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>TAICHI : Séquence 1</title>
+  <title>TAICHI : séquence1, ouverture</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #ccc; /* ✅ Fond gris */
+      background-color: #ccc; /* ✅ fond gris */
       color: black;
       text-align: center;
     }
@@ -41,7 +41,7 @@
     model-viewer {
       width: 100%;
       height: 100%;
-      background-color: transparent; /* ✅ Important pour laisser voir le fond */
+      background-color: transparent;
     }
 
     #ground {
@@ -49,8 +49,8 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 30%; /* ✅ Hauteur ajustable du sol */
-      background-color: white; /* ✅ Sol blanc */
+      height: 30%;
+      background-color: white; /* ✅ sol blanc */
       z-index: 0;
     }
 
@@ -98,10 +98,8 @@
   </div>
 
   <div id="container">
-    <!-- ✅ Sol blanc au fond -->
     <div id="ground"></div>
 
-    <!-- ✅ Contrôle caméra -->
     <div id="controls">
       <button class="button" onclick="setCamera('default')">↩ Vue Libre</button>
       <button class="button" onclick="setCamera('front')">👤 Face</button>
@@ -111,20 +109,19 @@
       <button class="button" onclick="setCamera('top')">🔝 Dessus</button>
     </div>
 
-    <!-- ✅ Visionneuse du modèle -->
     <model-viewer id="viewer"
       src="model.glb"
       autoplay
-      camera-controls
       auto-rotate
+      camera-controls
       shadow-intensity="1"
       shadow-softness="1"
       environment-image="neutral"
       camera-orbit="0deg 75deg 3m"
       field-of-view="30deg"
       alt="Séquence Taichi"
-      ar
       exposure="1"
+      interaction-prompt="none"  <!-- ✅ supprime l'oscillation de départ -->
       style="--poster-color: transparent;"
     >
     </model-viewer>
@@ -137,66 +134,5 @@
     let currentStep = null;
 
     const commentaires = {
-      P1: `La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés...`,
-      P2: `Les genoux fléchissent légèrement pour amener tout le poids du corps sur le pied droit...`,
-      P3: `La taille se déplace sur la gauche pour se centrer...`,
-      P4: `La taille remonte vers le haut, elle entraîne les deux bras...`,
-      P5: `Les bras redescendent en sens inverse...`
-    };
-
-    const cameraPresets = {
-      default: '0deg 75deg 3m',
-      front: '0deg 90deg 2.5m',
-      back: '180deg 90deg 2.5m',
-      left: '90deg 90deg 2.5m',
-      right: '-90deg 90deg 2.5m',
-      top: '0deg 0deg 3m'
-    };
-
-    function setCamera(view) {
-      const orbit = cameraPresets[view] || cameraPresets.default;
-      viewer.setAttribute('camera-orbit', orbit);
-      viewer.autoRotate = (view === 'default');
-    }
-
-    select.addEventListener('change', () => {
-      const value = select.value;
-
-      if (value === 'animation') {
-        retourAnimation();
-      } else {
-        currentStep = value;
-        viewer.removeAttribute('autoplay');
-        viewer.setAttribute('src', `${value}.glb`);
-        viewer.addEventListener('load', () => {
-          speak(commentaires[value]);
-        }, { once: true });
-      }
-    });
-
-    function retourAnimation() {
-      currentStep = null;
-      viewer.setAttribute('src', 'model.glb');
-      viewer.setAttribute('autoplay', true);
-      viewer.autoRotate = true;
-      select.value = 'animation';
-    }
-
-    function speak(text) {
-      if (!text) return;
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fr-FR';
-      synth.cancel();
-      synth.speak(utterance);
-    }
-
-    viewer.addEventListener('load', () => {
-      if (!currentStep) {
-        viewer.play();
-      }
-    });
-  </script>
-
-</body>
-</html>
+      P1: `La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés. Le poids du corps est réparti harmonieusement sur le yonquand des deux pieds. Les chairs s’écoulent vers le bas.`,
+      P2: `Les genoux fléch
