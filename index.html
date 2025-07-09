@@ -44,6 +44,8 @@
       right: 10px;
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
       z-index: 10;
     }
 
@@ -52,8 +54,8 @@
       color: white;
       border: none;
       border-radius: 6px;
-      padding: 10px 20px;
-      font-size: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
       cursor: pointer;
     }
 
@@ -84,8 +86,12 @@
 
   <div id="container">
     <div id="controls">
-      <button id="infoBtn" class="button" onclick="lireInfo()">📣 Infos</button>
-      <button id="retourBtn" class="button" onclick="retourAnimation()">↩ Retour animation</button>
+      <button class="button" onclick="setCamera('default')">↩ Vue Libre</button>
+      <button class="button" onclick="setCamera('front')">👤 Face</button>
+      <button class="button" onclick="setCamera('back')">🔙 Dos</button>
+      <button class="button" onclick="setCamera('left')">⬅ Gauche</button>
+      <button class="button" onclick="setCamera('right')">➡ Droite</button>
+      <button class="button" onclick="setCamera('top')">🔝 Dessus</button>
     </div>
 
     <model-viewer id="viewer"
@@ -95,76 +101,38 @@
       auto-rotate
       shadow-intensity="1"
       environment-image="neutral"
-      alt="Séquence Taichi">
+      exposure="1"
+      alt="Séquence Taichi"
+      ar
+      shadow-softness="1"
+      camera-orbit="0deg 75deg 3m"
+      field-of-view="30deg"
+      style="--poster-color: transparent;">
     </model-viewer>
   </div>
 
   <script>
     const viewer = document.getElementById('viewer');
     const select = document.getElementById('position');
-    const infoBtn = document.getElementById('infoBtn');
-    const retourBtn = document.getElementById('retourBtn');
 
     let currentStep = null;
 
     const commentaires = {
-      P1: `La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés. 
-           Le poids du corps est réparti harmonieusement sur le yonquand des deux pieds. 
-           Les chairs s’écoulent vers le bas.`,
-      P2: `Les genoux fléchissent légèrement pour amener tout le poids du corps sur le pied droit.
-           La jambe gauche se déplace latéralement. La pointe du pied gauche touche le sol en premier.
-           Le poids est toujours sur le pied droit.`,
-      P3: `La taille se déplace sur la gauche pour se centrer sur l’axe vertical. Les bras pendent le long du corps.`,
-      P4: `La taille remonte vers le haut, elle entraine les deux bras vers le haut.
-           Les bras se sont levés naturellement sans contrainte sur les articulations, les aisselles sont dégagées.`,
-      P5: `Les bras redescendent en sens inverse. 
-           Les mains actives sont bien posées, les paumes sont dirigées vers le sol sans contrainte.`
+      P1: `La tête est suspendue. Les épaules sont basses...`,
+      P2: `Les genoux fléchissent légèrement...`,
+      P3: `La taille se déplace sur la gauche...`,
+      P4: `La taille remonte vers le haut...`,
+      P5: `Les bras redescendent en sens inverse...`
     };
 
-    select.addEventListener('change', () => {
-      const value = select.value;
+    // Caméras prédéfinies
+    const cameraPresets = {
+      default: '0deg 75deg 3m',
+      front: '0deg 90deg 2.5m',
+      back: '180deg 90deg 2.5m',
+      left: '90deg 90deg 2.5m',
+      right: '-90deg 90deg 2.5m',
+      top: '0deg 0deg 2.5m'
+    };
 
-      if (value === 'animation') {
-        retourAnimation();
-      } else {
-        currentStep = value;
-        viewer.src = `${value}.glb`;
-        viewer.pause(); // Charge le modèle mais sans animation
-      }
-    });
-
-    function retourAnimation() {
-      currentStep = null;
-      viewer.src = 'model.glb';
-      viewer.autoplay = true;
-      viewer.play();
-      select.value = 'animation';
-    }
-
-    function lireInfo() {
-      if (!currentStep || !commentaires[currentStep]) {
-        speak("Aucune information disponible pour cette position.");
-        return;
-      }
-      speak(commentaires[currentStep]);
-    }
-
-    function speak(text) {
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fr-FR';
-      synth.cancel(); // Annule la lecture en cours
-      synth.speak(utterance);
-    }
-
-    // Au chargement initial, animation principale
-    viewer.addEventListener('load', () => {
-      if (!currentStep) {
-        viewer.animationName = "ouverture"; // change si le nom réel diffère
-        viewer.play();
-      }
-    });
-  </script>
-
-</body>
-</html>
+    function setCamera(v
