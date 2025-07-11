@@ -12,56 +12,65 @@
       color: white;
       text-align: center;
     }
+
     h1 {
       margin: 20px;
-      font-size: 24px;
+      font-size: 28px;
     }
+
     #menu {
       margin: 15px 0;
     }
+
+    label {
+      font-size: 18px;
+    }
+
     select {
-      font-size: 16px;
-      padding: 8px;
+      font-size: 18px;
+      padding: 10px;
       border-radius: 8px;
       background-color: #333;
       color: white;
       border: none;
+      margin-top: 10px;
     }
+
     model-viewer {
       width: 100%;
-      height: 80vh;
+      height: 90vh;
       background-color: #222;
     }
-    #controls {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      display: flex;
-      justify-content: space-between;
-      z-index: 10;
-    }
-    .button {
-      background-color: #444;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .button:hover {
-      background-color: #666;
-    }
+
     #container {
       position: relative;
+    }
+
+    #rotationPrompt {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      animation: fadeout 3s ease 3s forwards;
+    }
+
+    @keyframes fadeout {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
     }
   </style>
 </head>
 <body>
   <h1>TAICHI : séquence1, ouverture</h1>
+
   <div id="menu">
-    <label for="position">Choisir une étape :</label><br>
+    <label for="position">Choisir une position :</label><br>
     <select id="position">
       <option value="animation">Retour animation</option>
       <option value="P1">Position de Départ</option>
@@ -73,19 +82,19 @@
   </div>
 
   <div id="container">
-    <div id="controls">
-      <button id="infoBtn" class="button" onclick="lireInfo()">📣 Infos</button>
-      <button id="retourBtn" class="button" onclick="retourAnimation()">↩ Retour animation</button>
-    </div>
+    <div id="rotationPrompt">🔄 Faites pivoter le modèle avec la souris</div>
 
     <model-viewer id="viewer"
       src="model.glb"
       autoplay
       camera-controls
-      auto-rotate
-      shadow-intensity="1"
-      environment-image="neutral"
       interaction-prompt="none"
+      exposure="1"
+      shadow-intensity="0.6"
+      shadow-softness="1"
+      camera-orbit="0deg 90deg 2.5m"
+      field-of-view="30deg"
+      environment-image="neutral"
       alt="Séquence Taichi">
     </model-viewer>
   </div>
@@ -93,8 +102,6 @@
   <script>
     const viewer = document.getElementById('viewer');
     const select = document.getElementById('position');
-    const infoBtn = document.getElementById('infoBtn');
-    const retourBtn = document.getElementById('retourBtn');
     let currentStep = null;
 
     const commentaires = {
@@ -107,44 +114,30 @@
 
     select.addEventListener('change', () => {
       const value = select.value;
+
       if (value === 'animation') {
-        retourAnimation();
+        currentStep = null;
+        viewer.src = 'model.glb';
+        viewer.autoplay = true;
+        viewer.play();
       } else {
         currentStep = value;
         viewer.src = `${value}.glb`;
-        viewer.pause(); // Pour bloquer l'animation si besoin
-        infoBtn.style.display = 'none'; // Cacher le bouton Infos
+        viewer.pause(); // Bloque l’animation si nécessaire
       }
     });
 
-    function retourAnimation() {
-      currentStep = null;
-      viewer.src = 'model.glb';
-      viewer.autoplay = true;
-      viewer.play();
-      select.value = 'animation';
-      infoBtn.style.display = 'inline-block'; // Réafficher le bouton Infos
-    }
-
-    function lireInfo() {
-      if (!currentStep || !commentaires[currentStep]) {
-        speak("Aucune information disponible pour cette position.");
-        return;
-      }
-      speak(commentaires[currentStep]);
-    }
-
-    function speak(text) {
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fr-FR';
-      synth.cancel();
-      synth.speak(utterance);
-    }
-
     viewer.addEventListener('load', () => {
+      // Fixer la caméra de face après chargement
+      viewer.cameraOrbit = '0deg 90deg 2.5m';
+
+      // Lire automatiquement le commentaire si c'est une position P1–P5
       if (currentStep && commentaires[currentStep]) {
-        speak(commentaires[currentStep]);
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(commentaires[currentStep]);
+        utterance.lang = 'fr-FR';
+        synth.cancel();
+        synth.speak(utterance);
       } else if (!currentStep) {
         viewer.animationName = "ouverture";
         viewer.play();
