@@ -8,20 +8,17 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #ccc; /* ✅ fond gris */
-      color: black;
+      background-color: #111;
+      color: white;
       text-align: center;
     }
-
     h1 {
       margin: 20px;
       font-size: 24px;
     }
-
     #menu {
       margin: 15px 0;
     }
-
     select {
       font-size: 16px;
       padding: 8px;
@@ -30,62 +27,129 @@
       color: white;
       border: none;
     }
-
-    #container {
-      position: relative;
-      width: 100%;
-      height: 80vh;
-      overflow: hidden;
-    }
-
     model-viewer {
       width: 100%;
-      height: 100%;
-      background-color: transparent;
+      height: 80vh;
+      background-color: #222;
     }
-
-    #ground {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 30%;
-      background-color: white; /* ✅ sol blanc */
-      z-index: 0;
-    }
-
     #controls {
       position: absolute;
       top: 10px;
       left: 10px;
       right: 10px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
+      justify-content: space-between;
       z-index: 10;
     }
-
     .button {
       background-color: #444;
       color: white;
       border: none;
       border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 13px;
+      padding: 10px 20px;
+      font-size: 14px;
       cursor: pointer;
     }
-
     .button:hover {
       background-color: #666;
+    }
+    #container {
+      position: relative;
     }
   </style>
 </head>
 <body>
-
   <h1>TAICHI : séquence1, ouverture</h1>
-
   <div id="menu">
     <label for="position">Choisir une étape :</label><br>
     <select id="position">
-      <option v
+      <option value="animation">Retour animation</option>
+      <option value="P1">Position de Départ</option>
+      <option value="P2">Déplacement latéral jambe gauche</option>
+      <option value="P3">Déplacement latéral de la taille</option>
+      <option value="P4">Élever les bras</option>
+      <option value="P5">Descendre les bras</option>
+    </select>
+  </div>
+
+  <div id="container">
+    <div id="controls">
+      <button id="infoBtn" class="button" onclick="lireInfo()">📣 Infos</button>
+      <button id="retourBtn" class="button" onclick="retourAnimation()">↩ Retour animation</button>
+    </div>
+
+    <model-viewer id="viewer"
+      src="model.glb"
+      autoplay
+      camera-controls
+      auto-rotate
+      shadow-intensity="1"
+      environment-image="neutral"
+      interaction-prompt="none"
+      alt="Séquence Taichi">
+    </model-viewer>
+  </div>
+
+  <script>
+    const viewer = document.getElementById('viewer');
+    const select = document.getElementById('position');
+    const infoBtn = document.getElementById('infoBtn');
+    const retourBtn = document.getElementById('retourBtn');
+    let currentStep = null;
+
+    const commentaires = {
+      P1: "La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés. Le poids du corps est réparti harmonieusement sur le yonquand des deux pieds. Les chairs s’écoulent vers le bas.",
+      P2: "Les genoux fléchissent légèrement pour amener tout le poids du corps sur le pied droit. La jambe gauche se déplace latéralement. La pointe du pied gauche touche le sol en premier. Le poids est toujours sur le pied droit.",
+      P3: "La taille se déplace sur la gauche pour se centrer sur l’axe vertical. Les bras pendent le long du corps.",
+      P4: "La taille remonte vers le haut, elle entraine les deux bras vers le haut. Les bras se sont levés naturellement sans contrainte sur les articulations, les aisselles sont dégagées.",
+      P5: "Les bras redescendent en sens inverse. Les mains actives sont bien posées, les paumes sont dirigées vers le sol sans contrainte."
+    };
+
+    select.addEventListener('change', () => {
+      const value = select.value;
+      if (value === 'animation') {
+        retourAnimation();
+      } else {
+        currentStep = value;
+        viewer.src = `${value}.glb`;
+        viewer.pause(); // Pour bloquer l'animation si besoin
+        infoBtn.style.display = 'none'; // Cacher le bouton Infos
+      }
+    });
+
+    function retourAnimation() {
+      currentStep = null;
+      viewer.src = 'model.glb';
+      viewer.autoplay = true;
+      viewer.play();
+      select.value = 'animation';
+      infoBtn.style.display = 'inline-block'; // Réafficher le bouton Infos
+    }
+
+    function lireInfo() {
+      if (!currentStep || !commentaires[currentStep]) {
+        speak("Aucune information disponible pour cette position.");
+        return;
+      }
+      speak(commentaires[currentStep]);
+    }
+
+    function speak(text) {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      synth.cancel();
+      synth.speak(utterance);
+    }
+
+    viewer.addEventListener('load', () => {
+      if (currentStep && commentaires[currentStep]) {
+        speak(commentaires[currentStep]);
+      } else if (!currentStep) {
+        viewer.animationName = "ouverture";
+        viewer.play();
+      }
+    });
+  </script>
+</body>
+</html>
