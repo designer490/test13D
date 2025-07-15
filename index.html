@@ -39,7 +39,7 @@
     model-viewer {
       width: 100%;
       height: 90vh;
-      background-color: #222;
+      background-color: #eeeeee; /* Fond gris très clair */
     }
 
     #container {
@@ -72,7 +72,6 @@
   <div id="menu">
     <label for="position">Choisir une position :</label><br>
     <select id="position">
-      
       <option value="P1">Position de Départ</option>
       <option value="P2">Déplacement latéral jambe gauche</option>
       <option value="P3">Déplacement latéral de la taille</option>
@@ -93,6 +92,8 @@
       exposure="1"
       shadow-intensity="0.6"
       shadow-softness="1"
+      shadow-resolution="1024"
+      shadow-mode="contact"
       camera-orbit="0deg 90deg 2.5m"
       field-of-view="30deg"
       environment-image="neutral"
@@ -106,11 +107,11 @@
     let currentStep = null;
 
     const commentaires = {
-      P1: "La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés. Le poids du corps est réparti harmonieusement sur le yonquand des deux pieds. Les chairs s’écoulent vers le bas.",
-      P2: "Les genoux fléchissent légèrement pour amener tout le poids du corps sur le pied droit. La jambe gauche se déplace latéralement. La pointe du pied gauche touche le sol en premier. Le poids est toujours sur le pied droit.",
-      P3: "La taille se déplace sur la gauche pour se centrer sur l’axe vertical. Les bras pendent le long du corps. Le poids est maintenant bien réparti sur les deux pieds. Les genoux sont légèrement ouverts",
-      P4: "La taille remonte vers le haut, elle entraine les deux bras vers le haut. Les bras se sont levés naturellement sans contrainte sur les articulations, les aisselles sont dégagées.",
-      P5: "Les bras redescendent en sens inverse. Les mains actives sont bien posées, les paumes sont dirigées vers le sol sans contrainte."
+      P1: "La tête est suspendue. Les épaules sont basses. Les bras pendent naturellement sur les côtés...",
+      P2: "Les genoux fléchissent légèrement pour amener tout le poids du corps sur le pied droit...",
+      P3: "La taille se déplace sur la gauche pour se centrer sur l’axe vertical...",
+      P4: "La taille remonte vers le haut, elle entraine les deux bras vers le haut...",
+      P5: "Les bras redescendent en sens inverse. Les mains actives sont bien posées..."
     };
 
     select.addEventListener('change', () => {
@@ -124,15 +125,13 @@
       } else {
         currentStep = value;
         viewer.src = `${value}.glb`;
-        viewer.pause(); // Bloque l’animation si nécessaire
+        viewer.pause();
       }
     });
 
     viewer.addEventListener('load', () => {
-      // Fixer la caméra de face après chargement
       viewer.cameraOrbit = '0deg 90deg 2.5m';
 
-      // Lire automatiquement le commentaire si c'est une position P1–P5
       if (currentStep && commentaires[currentStep]) {
         const synth = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(commentaires[currentStep]);
